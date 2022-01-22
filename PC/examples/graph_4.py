@@ -3,11 +3,14 @@ Corresponds to the Directed Acyclic Graph given in Figure 5.3 in 'Causation,
 Prediction, and Search' (P. Spirtes, C. Glymour and R. Scheines ; 2nd
 edition, 2000)
 """
+import os
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 
-import pingouin as pg
+from PC.utlities.independence_relationships import \
+    do_test_linear_independence, \
+    do_test_linear_conditional_independence, \
+    produce_independence_relationships, render_independence_relationships
 
 
 def return_adjacency_matrix():
@@ -115,18 +118,33 @@ def generate_data(sample_size: int, coefficients: dict = None,
     return data
 
 
-if __name__ == '__main__':
-    n = 10000
-
-    data = generate_data(n)
-    print(data.head())
-
-    data.hist(density=True)
-    plt.savefig('test.png')
-
-    print(pg.partial_corr(
+def run_example(sample_size: int, csv_filename: str):
+    data = generate_data(sample_size)
+    dic_independence_relationships = produce_independence_relationships(
         data=data,
-        x='x0',
-        y='x4',
-        covar=['x2']
-    ))
+        independence_test=do_test_linear_independence,
+        conditional_independence_test=do_test_linear_conditional_independence,
+    )
+    df_independence_relationships = render_independence_relationships(
+        dic_independence_relationships,
+        level=0.05
+    )
+
+    df_independence_relationships.to_csv(
+        csv_filename,
+        sep=';',
+        index=False
+    )
+
+
+if __name__ == '__main__':
+
+    sample_size = 10000
+    csv_filename = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        'graph_4_independence_relationships.csv'
+    )
+    run_example(
+        sample_size=sample_size,
+        csv_filename=csv_filename
+    )
