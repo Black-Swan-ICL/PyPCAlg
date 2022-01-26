@@ -11,6 +11,13 @@ from PC.examples.graph_1 import oracle_indep_test as \
 from PC.examples.graph_1 import oracle_cond_indep_test as \
     oracle_cond_indep_test_example_1
 
+from PC.examples.graph_2 import generate_data as generate_data_example_2
+from PC.examples.graph_2 import get_graph_skeleton as skeleton_example_2
+from PC.examples.graph_2 import oracle_indep_test as \
+    oracle_indep_test_example_2
+from PC.examples.graph_2 import oracle_cond_indep_test as \
+    oracle_cond_indep_test_example_2
+
 from PC.examples.graph_4 import generate_data as generate_data_example_4
 from PC.examples.graph_4 import get_graph_skeleton as skeleton_example_4
 from PC.examples.graph_4 import oracle_indep_test as \
@@ -24,12 +31,20 @@ from PC.examples.graph_4 import oracle_cond_indep_test as \
     'expected_separation_sets',
     [
         (
-            generate_data_example_1(10),
-            oracle_indep_test_example_1(),
-            oracle_cond_indep_test_example_1(),
-            0.05,
-            skeleton_example_1(),
-            set()  # TODO change when ready
+                generate_data_example_1(10),
+                oracle_indep_test_example_1(),
+                oracle_cond_indep_test_example_1(),
+                0.05,
+                skeleton_example_1(),
+                set()  # TODO change when ready
+        ),
+        (
+                generate_data_example_2(10),
+                oracle_indep_test_example_2(),
+                oracle_cond_indep_test_example_2(),
+                0.05,
+                skeleton_example_2(),
+                set()  # TODO change when ready
         ),
         (
                 generate_data_example_4(10),
