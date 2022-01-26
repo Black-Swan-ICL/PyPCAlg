@@ -10,6 +10,7 @@ field_pc_cpdag = 'CPDAG'
 field_separation_sets = 'SeparationSets'
 
 
+# TODO debug, does not work
 def run_pc_adjacency_phase(data: pd.DataFrame, indep_test_func: callable,
                            cond_indep_test_func: callable,
                            level: float) -> tuple[np.ndarray, dict]:
