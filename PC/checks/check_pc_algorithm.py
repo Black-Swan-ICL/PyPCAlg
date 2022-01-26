@@ -15,9 +15,10 @@ from PC.examples.graph_2 import generate_data as generate_data_example_2
 from PC.examples.graph_3 import generate_data as generate_data_example_3
 
 from PC.examples.graph_4 import generate_data as generate_data_example_4
-from PC.examples.oracle_tools import \
-    oracle_independence_test as oracle_indep_example_4, \
-    oracle_conditional_independence_test as oracle_cond_indep_example_4
+from PC.examples.graph_4 import oracle_indep_test as \
+    oracle_indep_test_example_4
+from PC.examples.graph_4 import oracle_cond_indep_test as \
+    oracle_cond_indep_test_example_4
 
 if __name__ == '__main__':
 
@@ -55,8 +56,8 @@ if __name__ == '__main__':
         data=data,
         # indep_test_func=indep_test_func,
         # cond_indep_test_func=cond_indep_test_func,
-        indep_test_func=oracle_indep_example_4,
-        cond_indep_test_func=oracle_cond_indep_example_4,
+        indep_test_func=oracle_indep_test_example_4(),
+        cond_indep_test_func=oracle_cond_indep_test_example_4(),
         level=0.1
     )
 
