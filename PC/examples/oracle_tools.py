@@ -7,7 +7,7 @@ def _read_true_independence_relationships(filename: str) -> pandas.DataFrame:
     df = pd.read_csv(
         filename,
         header=0,
-        sep='\t'
+        sep=';'
     )
 
     expected_columns = [
