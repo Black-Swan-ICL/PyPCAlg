@@ -10,6 +10,7 @@ field_pc_cpdag = 'CPDAG'
 field_separation_sets = 'SeparationSets'
 
 
+# TODO give an option to log the run ?
 # TODO debug, does not work
 def run_pc_adjacency_phase(data: pd.DataFrame, indep_test_func: callable,
                            cond_indep_test_func: callable,
@@ -123,12 +124,14 @@ def run_pc_adjacency_phase(data: pd.DataFrame, indep_test_func: callable,
     return causal_skeleton, separation_sets
 
 
+# TODO given an option to log the run ?
 # TODO implement
 def run_pc_orientation_phase(causal_skeleton, separation_sets):
 
     return np.nan * np.ones_like(causal_skeleton)
 
 
+# TODO give an option to log the run ?
 def run_pc_algorithm(data, indep_test_func, cond_indep_test_func, level):
     """
     Runs the original PC algorithm.
