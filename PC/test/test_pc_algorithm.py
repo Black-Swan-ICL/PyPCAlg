@@ -18,6 +18,13 @@ from PC.examples.graph_2 import oracle_indep_test as \
 from PC.examples.graph_2 import oracle_cond_indep_test as \
     oracle_cond_indep_test_example_2
 
+from PC.examples.graph_3 import generate_data as generate_data_example_3
+from PC.examples.graph_3 import get_graph_skeleton as skeleton_example_3
+from PC.examples.graph_3 import oracle_indep_test as \
+    oracle_indep_test_example_3
+from PC.examples.graph_3 import oracle_cond_indep_test as \
+    oracle_cond_indep_test_example_3
+
 from PC.examples.graph_4 import generate_data as generate_data_example_4
 from PC.examples.graph_4 import get_graph_skeleton as skeleton_example_4
 from PC.examples.graph_4 import oracle_indep_test as \
@@ -44,6 +51,14 @@ from PC.examples.graph_4 import oracle_cond_indep_test as \
                 oracle_cond_indep_test_example_2(),
                 0.05,
                 skeleton_example_2(),
+                set()  # TODO change when ready
+        ),
+        (
+                generate_data_example_3(10),
+                oracle_indep_test_example_3(),
+                oracle_cond_indep_test_example_3(),
+                0.05,
+                skeleton_example_3(),
                 set()  # TODO change when ready
         ),
         (

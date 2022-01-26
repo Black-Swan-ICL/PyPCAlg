@@ -7,13 +7,92 @@ import os
 import numpy as np
 import pandas as pd
 
+from PC.examples.oracle_tools import \
+    generate_oracle_independence_relationships, \
+    oracle_independence_test, oracle_conditional_independence_test
 from PC.utlities.independence_relationships import \
     do_test_linear_independence, \
     do_test_linear_conditional_independence, \
     produce_independence_relationships, render_independence_relationships
 
 
-def return_adjacency_matrix():
+def get_oracle_independence_relationships() -> dict:
+
+    filename = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        'true_independence_relationships_graph_3.csv'
+    )
+
+    oracle = generate_oracle_independence_relationships(filename)
+
+    return oracle
+
+
+def oracle_indep_test() -> callable:
+
+    def res(data, x, y, level):
+
+        oracle = get_oracle_independence_relationships()
+
+        return oracle_independence_test(
+            oracle=oracle,
+            data=data,
+            x=x,
+            y=y,
+            level=level
+        )
+
+    return res
+
+
+def oracle_cond_indep_test() -> callable:
+
+    def res(data, x, y, z, level):
+        oracle = get_oracle_independence_relationships()
+
+        return oracle_conditional_independence_test(
+            oracle=oracle,
+            data=data,
+            x=x,
+            y=y,
+            z=z,
+            level=level
+        )
+
+    return res
+
+
+def get_graph_skeleton():
+    """
+    Returns the skeleton of the graph corresponding to example 3.
+
+    Returns
+    -------
+    array_like
+        The skeleton of the graph corresponding to example 3.
+    """
+    skeleton = np.asarray(
+        [
+            [0, 1, 0, 0, 0],
+            [1, 0, 1, 1, 0],
+            [0, 1, 0, 0, 1],
+            [0, 1, 0, 0, 1],
+            [0, 0, 1, 1, 0]
+        ]
+    )
+
+    return skeleton
+
+
+def get_adjacency_matrix():
+    """
+    Returns the adjacency matrix of the graph corresponding to example 3.
+
+    Returns
+    -------
+    array_like
+        The adjacency matrix of the graph corresponding to example 3.
+    """
     adjacency_matrix = np.asarray(
         [
             [0, 1, 0, 0, 0],
@@ -27,7 +106,7 @@ def return_adjacency_matrix():
     return adjacency_matrix
 
 
-def return_default_coefficients():
+def get_default_coefficients():
     coefficients = dict()
     coefficients['u0_mean'] = 0
     coefficients['u0_std'] = 1
@@ -63,7 +142,7 @@ def generate_data(sample_size: int, coefficients: dict = None,
         if random_coefficients:
             pass
         else:
-            coefficients = return_default_coefficients()
+            coefficients = get_default_coefficients()
 
     u0 = rng.normal(
         loc=coefficients['u0_mean'],
