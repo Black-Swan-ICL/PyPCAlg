@@ -86,7 +86,7 @@ def generate_data(sample_size: int, coefficients: dict = None,
     return data
 
 
-def run_example(sample_size: int, csv_filename: str):
+def run_example_with_linear_tests(sample_size: int, csv_filename: str):
     data = generate_data(sample_size)
     dic_independence_relationships = produce_independence_relationships(
         data=data,
@@ -110,9 +110,9 @@ if __name__ == '__main__':
     sample_size = 10000
     csv_filename = os.path.join(
         os.path.dirname(os.path.abspath(__file__)),
-        'graph_2_independence_relationships.csv'
+        'empirical_graph_2_independence_relationships_with_linear_tests.csv'
     )
-    run_example(
+    run_example_with_linear_tests(
         sample_size=sample_size,
         csv_filename=csv_filename
     )
