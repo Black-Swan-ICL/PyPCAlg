@@ -1,5 +1,7 @@
 from itertools import combinations
 
+import logging
+
 import numpy as np
 import pandas as pd
 
@@ -10,29 +12,48 @@ field_pc_cpdag = 'CPDAG'
 field_separation_sets = 'SeparationSets'
 
 
-# TODO give an option to log the run ?
 # TODO debug, does not work
 def run_pc_adjacency_phase(data: pd.DataFrame, indep_test_func: callable,
                            cond_indep_test_func: callable,
-                           level: float) -> tuple[np.ndarray, dict]:
+                           level: float,
+                           log_file: str = '') -> tuple[np.ndarray, dict]:
+
+    # To dal with matters of logging
+    logging_active = False
+    if log_file != '':
+        logging_active = True
+        logger = logging.getLogger('pc_alg_adjacency_phase')
+        logger.setLevel(logging.INFO)
+        formatter = logging.Formatter(
+            fmt='%(asctime)s - %(name)s - %(message)s',
+            datefmt='%d-%b-%y %H:%M:%S'
+        )
+        file_handler = logging.FileHandler(
+            log_file,
+            mode='a'
+        )
+        file_handler.setLevel(logging.INFO)
+        file_handler.setFormatter(formatter)
+        logger.addHandler(file_handler)
 
     nb_obs, nb_var = data.shape
 
     causal_skeleton = np.ones((nb_var, nb_var)) - np.identity(nb_var)
     separation_sets = dict()
 
-    n = 0
+    depth = 0
 
     while True:
 
         adjacent_vertices = find_adjacent_vertices(causal_skeleton)
-        print("\n------------------------------------------------------------")
-        print(f"n == {n}")
-        print("-------------------------------------------------------------")
-        print(causal_skeleton)
-        l = list(adjacent_vertices)
-        l.sort()
-        print(l)
+
+        if logging_active:
+            logger.info('\n\n')  # just for readability of the log
+            logger.info(f'Depth == {depth}')
+            logger.info(f'Causal Skeleton :\n{causal_skeleton}')
+            logger.info(
+                f'Adjacent Vertices :\n{sorted(list(adjacent_vertices))}'
+            )
 
         stop_condition = True
         for (x, y) in adjacent_vertices:
@@ -40,26 +61,31 @@ def run_pc_adjacency_phase(data: pd.DataFrame, indep_test_func: callable,
             adjacent_to_x_excl_y = [
                 elt for elt in adjacent_to_x if elt != y
             ]
-            stop_condition = stop_condition and (len(adjacent_to_x_excl_y) < n)
+            stop_condition = stop_condition and (len(adjacent_to_x_excl_y) < depth)
 
-        print(f'\nStop condition == {stop_condition}')
+        if logging_active:
+            logger.info(f'Stop condition == {stop_condition}')
 
         for (x, y) in adjacent_vertices:
 
-            print(f"\nPair considered == {(x, y)}")
+            if logging_active:
+                logger.info(f'Pair considered == {(x,y)}')
 
             adjacent_to_x = find_adjacent_vertices_to(x, causal_skeleton)
             adjacent_to_x_excl_y = [
                 elt for elt in adjacent_to_x if elt != y
             ]
-            print(f"Adjacent to {x} == {adjacent_to_x}")
-            print(f"Adjacent to {x} except {y} == {adjacent_to_x_excl_y}")
 
-            if len(adjacent_to_x_excl_y) >= n:
+            if logging_active:
+                logger.info(f'Adjacent to {x} == {adjacent_to_x}')
+                logger.info(f'Adjacent to {x} except {y} == {adjacent_to_x_excl_y}')
 
-                if n == 0:
+            if len(adjacent_to_x_excl_y) >= depth:
 
-                    print("Conditioning set considered == []")
+                if depth == 0:
+
+                    if logging_active:
+                        logger.info('Conditioning set considered == []')
 
                     x_indep_y = indep_test_func(
                         data=data,
@@ -70,7 +96,8 @@ def run_pc_adjacency_phase(data: pd.DataFrame, indep_test_func: callable,
 
                     if x_indep_y:
 
-                        print(f"INDEPENDENCE FOUND : {x} _||_ {y}")
+                        if logging_active:
+                            logger.info(f'INDEPENDENCE FOUND : {x} _||_ {y}')
 
                         causal_skeleton[x, y] = 0
                         causal_skeleton[y, x] = 0
@@ -87,9 +114,10 @@ def run_pc_adjacency_phase(data: pd.DataFrame, indep_test_func: callable,
 
                 else:
 
-                    for z in combinations(adjacent_to_x_excl_y, n):
+                    for z in combinations(adjacent_to_x_excl_y, depth):
 
-                        print(f"Conditioning set considered == {z}")
+                        if logging_active:
+                            logger.info(f'Conditioning set considered == {z}')
 
                         x_indep_y_given_z = cond_indep_test_func(
                             data=data,
@@ -101,7 +129,8 @@ def run_pc_adjacency_phase(data: pd.DataFrame, indep_test_func: callable,
 
                         if x_indep_y_given_z:
 
-                            print(f"INDEPENDENCE FOUND == {x} _||_ {y} | {z}")
+                            if logging_active:
+                                logger.info(f'INDEPENDENCE FOUND == {x} _||_ {y} | {z}')
 
                             causal_skeleton[x, y] = 0
                             causal_skeleton[y, x] = 0
@@ -116,7 +145,7 @@ def run_pc_adjacency_phase(data: pd.DataFrame, indep_test_func: callable,
                             else:
                                 separation_sets[(y, x)] = [list(z)]
 
-        n += 1
+        depth += 1
 
         if stop_condition:
             break
@@ -124,17 +153,17 @@ def run_pc_adjacency_phase(data: pd.DataFrame, indep_test_func: callable,
     return causal_skeleton, separation_sets
 
 
-# TODO given an option to log the run ?
 # TODO implement
 def run_pc_orientation_phase(causal_skeleton: np.ndarray,
-                             separation_sets: dict) -> np.ndarray:
+                             separation_sets: dict,
+                             log_file: str = '') -> np.ndarray:
 
     return np.nan * np.ones_like(causal_skeleton)
 
 
-# TODO give an option to log the run ?
 def run_pc_algorithm(data: pd.DataFrame, indep_test_func: callable,
-                     cond_indep_test_func: callable, level: float) -> dict:
+                     cond_indep_test_func: callable, level: float,
+                     log_file: str = '') -> dict:
     """
     Runs the original PC algorithm.
 
@@ -148,6 +177,9 @@ def run_pc_algorithm(data: pd.DataFrame, indep_test_func: callable,
         A function to perform conditional independence testing.
     level : float
         The level for the tests
+    log_file : str, optional
+        The path to a file in which to store the log. No log will be generated
+        if the empty string is provided.
 
     Returns
     -------
@@ -160,12 +192,14 @@ def run_pc_algorithm(data: pd.DataFrame, indep_test_func: callable,
         data=data,
         indep_test_func=indep_test_func,
         cond_indep_test_func=cond_indep_test_func,
-        level=level
+        level=level,
+        log_file=log_file
     )
 
     cpdag = run_pc_orientation_phase(
         causal_skeleton=causal_skeleton,
-        separation_sets=separation_sets
+        separation_sets=separation_sets,
+        log_file=log_file
     )
 
     res = dict()
@@ -173,3 +207,20 @@ def run_pc_algorithm(data: pd.DataFrame, indep_test_func: callable,
     res[field_separation_sets] = separation_sets
 
     return res
+
+
+if __name__ == '__main__':
+
+    from PC.examples.graph_3 import generate_data as generate_data_example_3
+    from PC.examples.graph_3 import oracle_indep_test as \
+        oracle_indep_test_example_3
+    from PC.examples.graph_3 import oracle_cond_indep_test as \
+        oracle_cond_indep_test_example_3
+
+    skeleton, separation_sets = run_pc_adjacency_phase(
+        data=generate_data_example_3(10),
+        indep_test_func=oracle_indep_test_example_3(),
+        cond_indep_test_func=oracle_cond_indep_test_example_3(),
+        level=0.05,
+        log_file='log_pc.log'
+    )
