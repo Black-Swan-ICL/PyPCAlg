@@ -1,6 +1,8 @@
 import numpy as np
 
 
+# TODO document
+# TODO test
 def find_children(pdag: np.ndarray, node: int) -> set:
 
     n = pdag.shape[0]
@@ -14,6 +16,8 @@ def find_children(pdag: np.ndarray, node: int) -> set:
     return children
 
 
+# TODO document
+# TODO test
 def find_parents(pdag: np.ndarray, node: int) -> set:
 
     n = pdag.shape[0]
@@ -27,6 +31,8 @@ def find_parents(pdag: np.ndarray, node: int) -> set:
     return parents
 
 
+# TODO document
+# TODO test
 def find_undirected_neighbours(pdag: np.ndarray, node: int) -> set:
 
     n = pdag.shape[0]
@@ -40,6 +46,8 @@ def find_undirected_neighbours(pdag: np.ndarray, node: int) -> set:
     return undirected_neighbours
 
 
+# TODO document
+# TODO test
 def find_undirected_adjacent_pairs(pdag: np.ndarray) -> set:
 
     n = pdag.shape[0]
@@ -50,10 +58,13 @@ def find_undirected_adjacent_pairs(pdag: np.ndarray) -> set:
         for j in range(i + 1, n):
             if pdag[i, j] == 1 and pdag[j, i] == 1:
                 adjacent_vertices.add((i, j))
+                adjacent_vertices.add((j, i))
 
     return adjacent_vertices
 
 
+# TODO document
+# TODO test
 def find_undirected_non_adjacent_pairs(pdag: np.ndarray) -> set:
 
     n = pdag.shape[0]
@@ -64,5 +75,6 @@ def find_undirected_non_adjacent_pairs(pdag: np.ndarray) -> set:
         for j in range(i + 1, n):
             if pdag[i, j] == 0 and pdag[j, i] == 0:
                 non_adjacent_vertices.add((i, j))
+                non_adjacent_vertices.add((j, i))
 
     return non_adjacent_vertices

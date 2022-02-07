@@ -1,5 +1,7 @@
 """
-
+This module contains functions to apply Meek's rules, as stated in Judea
+Pearl's 'Causality - Models, Reasoning, and Inference' (2009 ; 2nd edition) on
+page 51, to Partially Directed Acyclic Graphs (PDAGs).
 """
 import copy
 
@@ -10,7 +12,24 @@ from PC.utilities.pdag import find_children, find_parents, \
     find_undirected_non_adjacent_pairs
 
 
+# TODO test
 def apply_rule_R1(pdag: np.ndarray) -> np.ndarray:
+    """
+    Applies Meek's rule R1 to a Partially Directed Acyclic Graph (PDAG).
+
+    In full : 'orient b - c into b -> c whenever there is an arrow a -> b such
+    that a and c are nonadjacent'.
+
+    Parameters
+    ----------
+    pdag : array_like
+        The PDAG.
+
+    Returns
+    -------
+    array_like
+        The PDAG after applying rule R1.
+    """
 
     new_pdag = copy.deepcopy(pdag)
 
@@ -31,7 +50,23 @@ def apply_rule_R1(pdag: np.ndarray) -> np.ndarray:
     return new_pdag
 
 
+# TODO test
 def apply_rule_R2(pdag: np.ndarray) -> np.ndarray:
+    """
+    Applies Meek's rule R2 to a Partially Directed Acyclic Graph (PDAG).
+
+    In full : 'orient a — b into a -> b whenever there is chain a -> c -> b'.
+
+    Parameters
+    ----------
+    pdag : array_like
+        The PDAG.
+
+    Returns
+    -------
+    array_like
+        The PDAG after applying rule R2.
+    """
 
     new_pdag = copy.deepcopy(pdag)
 
@@ -46,13 +81,31 @@ def apply_rule_R2(pdag: np.ndarray) -> np.ndarray:
                                  node=b)
 
         eligible = children_a.intersection(parents_b)
+
         if len(eligible) > 0:
             new_pdag[b, a] = 0
 
     return new_pdag
 
 
+# TODO test
 def apply_rule_R3(pdag: np.ndarray) -> np.ndarray:
+    """
+    Applies Meek's rule R3 to a Partially Directed Acyclic Graph (PDAG).
+
+    In full : 'orient a — b into a -> b whenever there are two chains
+    a — c -> b and a — d -> b such that c and d are nonadjacent'.
+
+    Parameters
+    ----------
+    pdag : array_like
+        The PDAG.
+
+    Returns
+    -------
+    array_like
+        The PDAG after applying rule R3.
+    """
 
     new_pdag = copy.deepcopy(pdag)
 
@@ -84,7 +137,25 @@ def apply_rule_R3(pdag: np.ndarray) -> np.ndarray:
     return new_pdag
 
 
+# TODO test
 def apply_rule_R4(pdag: np.ndarray) -> np.ndarray:
+    """
+    Applies Meek's rule R4 to a Partially Directed Acyclic Graph (PDAG).
+
+    In full : 'orient a — b into a -> b whenever there are two chains
+    a — c -> d and c -> d -> b such that c and b are nonadjacent and a and d
+    are adjacent'.
+
+    Parameters
+    ----------
+    pdag : array_like
+        The PDAG.
+
+    Returns
+    -------
+    array_like
+        The PDAG after applying rule R4.
+    """
 
     new_pdag = copy.deepcopy(pdag)
 
@@ -120,7 +191,23 @@ def apply_rule_R4(pdag: np.ndarray) -> np.ndarray:
     return new_pdag
 
 
+# TODO test
 def apply_Meeks_rules(pdag: np.ndarray, apply_R4: bool) -> np.ndarray:
+    """
+    Applies Meek's rules to a Partially Directed Acyclic Graph (PDAG).
+
+    Parameters
+    ----------
+    pdag : array_like
+        The PDAG.
+    apply_R4 : bool, optional
+        Whether to apply Meek's rule R4 (not necessary for the PC algorithm).
+
+    Returns
+    -------
+    array_like
+        The PDAG after applying Meek's rules.
+    """
 
     new_pdag = apply_rule_R1(pdag=pdag)
     new_pdag = apply_rule_R2(pdag=new_pdag)

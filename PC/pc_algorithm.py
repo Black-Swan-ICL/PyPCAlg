@@ -14,6 +14,7 @@ field_pc_cpdag = 'CPDAG'
 field_separation_sets = 'SeparationSets'
 
 
+# TODO test incomplete
 def run_pc_adjacency_phase(data: pd.DataFrame, indep_test_func: callable,
                            cond_indep_test_func: callable,
                            level: float,
@@ -155,9 +156,31 @@ def run_pc_adjacency_phase(data: pd.DataFrame, indep_test_func: callable,
     return causal_skeleton, separation_sets
 
 
+# TODO test
 def run_pc_orientation_phase(causal_skeleton: np.ndarray,
                              separation_sets: dict,
                              log_file: str = '') -> np.ndarray:
+    """
+    Runs the adjacency phase of the PC algorithm, producing the Completed
+    Partially Directed Acyclic Graph (CPDAG) of the true causal graph (i.e.
+    the graphical representation of the Markov equivalence class of the true
+    graph).
+
+    Parameters
+    ----------
+    causal_skeleton : array_like
+        The causal skeleton of the true causal graph.
+    separation_sets : dict
+        The separation sets.
+    log_file : str, optional
+        The path to a file in which to store the log. No log will be generated
+        if the empty string is provided.
+
+    Returns
+    -------
+    array_like
+        The CPDAG.
+    """
 
     # To deal with matters of logging
     logging_active = False
@@ -257,16 +280,16 @@ def run_pc_algorithm(data: pd.DataFrame, indep_test_func: callable,
 
 if __name__ == '__main__':
 
-    from PC.examples.graph_4 import generate_data as generate_data_example_4
-    from PC.examples.graph_4 import oracle_indep_test as \
-        oracle_indep_test_example_4
-    from PC.examples.graph_4 import oracle_cond_indep_test as \
-        oracle_cond_indep_test_example_4
+    from PC.examples.graph_3 import generate_data as generate_data_example_3
+    from PC.examples.graph_3 import oracle_indep_test as \
+        oracle_indep_test_example_3
+    from PC.examples.graph_3 import oracle_cond_indep_test as \
+        oracle_cond_indep_test_example_3
 
     skeleton, separation_sets = run_pc_adjacency_phase(
-        data=generate_data_example_4(10),
-        indep_test_func=oracle_indep_test_example_4(),
-        cond_indep_test_func=oracle_cond_indep_test_example_4(),
+        data=generate_data_example_3(10),
+        indep_test_func=oracle_indep_test_example_3(),
+        cond_indep_test_func=oracle_cond_indep_test_example_3(),
         level=0.05,
         log_file='pc_adjacency.log'
     )
@@ -277,4 +300,5 @@ if __name__ == '__main__':
         log_file='pc_orientation.log'
     )
 
-    print(cpdag)
+    print(f'Skeleton:\n{skeleton}\n')
+    print(f'CPDAG:\n{cpdag}\n')

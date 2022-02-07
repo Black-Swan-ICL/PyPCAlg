@@ -84,6 +84,29 @@ def get_graph_skeleton():
     return skeleton
 
 
+def get_cpdag():
+    """
+    Returns the Markov equivalence class of the true graph as a Completed
+    Partially Directed Acyclic Graph (CPDAG) for example 4.
+
+    Returns
+    -------
+    array_like
+        The CPDAG for example 4.
+    """
+    cpdag = np.asarray(
+        [
+            [0, 1, 0, 0, 0],
+            [1, 0, 1, 0, 0],
+            [0, 0, 0, 1, 0],
+            [0, 0, 0, 0, 0],
+            [0, 0, 1, 1, 0]
+        ]
+    )
+
+    return cpdag
+
+
 def get_adjacency_matrix():
     """
     Returns the adjacency matrix of the graph corresponding to example 4.
