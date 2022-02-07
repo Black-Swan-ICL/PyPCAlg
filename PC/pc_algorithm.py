@@ -18,7 +18,7 @@ def run_pc_adjacency_phase(data: pd.DataFrame, indep_test_func: callable,
                            level: float,
                            log_file: str = '') -> tuple[np.ndarray, dict]:
 
-    # To dal with matters of logging
+    # To deal with matters of logging
     logging_active = False
     if log_file != '':
         logging_active = True
@@ -48,7 +48,7 @@ def run_pc_adjacency_phase(data: pd.DataFrame, indep_test_func: callable,
         adjacent_vertices = find_adjacent_vertices(causal_skeleton)
 
         if logging_active:
-            logger.info('\n\n')  # just for readability of the log
+            logger.info('\n\n')  # just for greater readability of the log
             logger.info(f'Depth == {depth}')
             logger.info(f'Causal Skeleton :\n{causal_skeleton}')
             logger.info(
@@ -57,11 +57,9 @@ def run_pc_adjacency_phase(data: pd.DataFrame, indep_test_func: callable,
 
         stop_condition = True
         for (x, y) in adjacent_vertices:
-            adjacent_to_x = find_adjacent_vertices_to(x, causal_skeleton)
-            adjacent_to_x_excl_y = [
-                elt for elt in adjacent_to_x if elt != y
-            ]
-            stop_condition = stop_condition and (len(adjacent_to_x_excl_y) < depth)
+            adj_to_x = find_adjacent_vertices_to(x, causal_skeleton)
+            adj_to_x_excl_y = [elt for elt in adj_to_x if elt != y]
+            stop_condition = stop_condition and (len(adj_to_x_excl_y) < depth)
 
         if logging_active:
             logger.info(f'Stop condition == {stop_condition}')
@@ -71,16 +69,14 @@ def run_pc_adjacency_phase(data: pd.DataFrame, indep_test_func: callable,
             if logging_active:
                 logger.info(f'Pair considered == {(x,y)}')
 
-            adjacent_to_x = find_adjacent_vertices_to(x, causal_skeleton)
-            adjacent_to_x_excl_y = [
-                elt for elt in adjacent_to_x if elt != y
-            ]
+            adj_to_x = find_adjacent_vertices_to(x, causal_skeleton)
+            adj_to_x_excl_y = [elt for elt in adj_to_x if elt != y]
 
             if logging_active:
-                logger.info(f'Adjacent to {x} == {adjacent_to_x}')
-                logger.info(f'Adjacent to {x} except {y} == {adjacent_to_x_excl_y}')
+                logger.info(f'Adjacent to {x} == {adj_to_x}')
+                logger.info(f'Adjacent to {x} except {y} == {adj_to_x_excl_y}')
 
-            if len(adjacent_to_x_excl_y) >= depth:
+            if len(adj_to_x_excl_y) >= depth:
 
                 if depth == 0:
 
@@ -114,7 +110,7 @@ def run_pc_adjacency_phase(data: pd.DataFrame, indep_test_func: callable,
 
                 else:
 
-                    for z in combinations(adjacent_to_x_excl_y, depth):
+                    for z in combinations(adj_to_x_excl_y, depth):
 
                         if logging_active:
                             logger.info(f'Conditioning set considered == {z}')
@@ -130,7 +126,9 @@ def run_pc_adjacency_phase(data: pd.DataFrame, indep_test_func: callable,
                         if x_indep_y_given_z:
 
                             if logging_active:
-                                logger.info(f'INDEPENDENCE FOUND == {x} _||_ {y} | {z}')
+                                logger.info(
+                                    f'INDEPENDENCE FOUND == {x} _||_ {y} | {z}'
+                                )
 
                             causal_skeleton[x, y] = 0
                             causal_skeleton[y, x] = 0
