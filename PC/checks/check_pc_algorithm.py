@@ -7,7 +7,7 @@ import pandas as pd
 
 from PC.pc_algorithm import *
 
-from PC.utlities.independence_relationships import \
+from PC.utilities.independence_relationships import \
     do_test_linear_independence, do_test_linear_conditional_independence
 
 from PC.examples.graph_1 import generate_data as generate_data_example_1

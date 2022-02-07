@@ -10,7 +10,7 @@ import pandas as pd
 from PC.examples.oracle_tools import \
     generate_oracle_independence_relationships, \
     oracle_independence_test, oracle_conditional_independence_test
-from PC.utlities.independence_relationships import \
+from PC.utilities.independence_relationships import \
     do_test_linear_independence, \
     do_test_linear_conditional_independence, \
     produce_independence_relationships, render_independence_relationships

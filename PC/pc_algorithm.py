@@ -6,7 +6,7 @@ import os
 import numpy as np
 import pandas as pd
 
-from PC.utlities.pc_algorithm import find_adjacent_vertices, \
+from PC.utilities.pc_algorithm import find_adjacent_vertices, \
     find_adjacent_vertices_to
 
 field_pc_cpdag = 'CPDAG'

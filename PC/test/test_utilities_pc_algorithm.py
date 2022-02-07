@@ -2,7 +2,7 @@ import pytest
 
 import numpy as np
 
-from PC.utlities.pc_algorithm import find_adjacent_vertices, \
+from PC.utilities.pc_algorithm import find_adjacent_vertices, \
     find_adjacent_vertices_to
 
 # Graph with no edges
