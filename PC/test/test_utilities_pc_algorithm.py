@@ -88,4 +88,10 @@ def test_find_adjacent_vertices(adjacency_matrix, expected_result):
 )
 def test_find_adjacent_vertices_to(x, adjacency_matrix, expected):
 
-    pass
+    actual = find_adjacent_vertices_to(
+        x=x,
+        adjacency_matrix=adjacency_matrix
+    )
+
+    assert set(actual) == set(expected)
+
