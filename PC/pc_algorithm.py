@@ -202,6 +202,8 @@ def run_pc_orientation_phase(causal_skeleton: np.ndarray,
         if np.array_equal(new_cpdag, current_cpdag):
             break
 
+        current_cpdag = new_cpdag
+
     return new_cpdag
 
 
