@@ -7,6 +7,9 @@ def find_adjacent_vertices(adjacency_matrix: npt.ArrayLike) -> set[tuple]:
     """
     Finds the pairs of vertices that are adjacent in the graph.
 
+    In the case of an undirected edge x -- y in the graph, BOTH (x, y) and
+    (y, x) will appear in the adjacent vertices returned.
+
     Parameters
     ----------
     adjacency_matrix : array_like
@@ -15,14 +18,13 @@ def find_adjacent_vertices(adjacency_matrix: npt.ArrayLike) -> set[tuple]:
     Returns
     -------
     set
-        A set of tuples. Each tuple represents a pair of vertices adjacent in
-        the graph.
+        A set of tuples. Each tuple represents an edge in the graph.
     """
 
     n = adjacency_matrix.shape[0]
     adjacent_vertices = set()
     for i in range(n):
-        for j in range(i + 1, n):
+        for j in range(n):
             if adjacency_matrix[i, j] != 0:
                 adjacent_vertices.add((i, j))
 

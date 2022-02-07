@@ -1,6 +1,7 @@
 from itertools import combinations
 
 import logging
+import os
 
 import numpy as np
 import pandas as pd
@@ -12,7 +13,6 @@ field_pc_cpdag = 'CPDAG'
 field_separation_sets = 'SeparationSets'
 
 
-# TODO debug, does not work
 def run_pc_adjacency_phase(data: pd.DataFrame, indep_test_func: callable,
                            cond_indep_test_func: callable,
                            level: float,
@@ -48,11 +48,11 @@ def run_pc_adjacency_phase(data: pd.DataFrame, indep_test_func: callable,
         adjacent_vertices = find_adjacent_vertices(causal_skeleton)
 
         if logging_active:
-            logger.info('\n\n')  # just for greater readability of the log
+            logger.info('\n\n\n\n')  # just for greater readability of the log
             logger.info(f'Depth == {depth}')
             logger.info(f'Causal Skeleton :\n{causal_skeleton}')
             logger.info(
-                f'Adjacent Vertices :\n{sorted(list(adjacent_vertices))}'
+                f'Adjacent Vertices :\n{sorted(list(adjacent_vertices))}\n'
             )
 
         stop_condition = True
@@ -209,16 +209,21 @@ def run_pc_algorithm(data: pd.DataFrame, indep_test_func: callable,
 
 if __name__ == '__main__':
 
-    from PC.examples.graph_3 import generate_data as generate_data_example_3
-    from PC.examples.graph_3 import oracle_indep_test as \
-        oracle_indep_test_example_3
-    from PC.examples.graph_3 import oracle_cond_indep_test as \
-        oracle_cond_indep_test_example_3
+    log_file = 'log_pc.log'
+    # os.remove(log_file)
+
+    from PC.examples.graph_4 import generate_data as generate_data_example_4
+    from PC.examples.graph_4 import oracle_indep_test as \
+        oracle_indep_test_example_4
+    from PC.examples.graph_4 import oracle_cond_indep_test as \
+        oracle_cond_indep_test_example_4
 
     skeleton, separation_sets = run_pc_adjacency_phase(
-        data=generate_data_example_3(10),
-        indep_test_func=oracle_indep_test_example_3(),
-        cond_indep_test_func=oracle_cond_indep_test_example_3(),
+        data=generate_data_example_4(10),
+        indep_test_func=oracle_indep_test_example_4(),
+        cond_indep_test_func=oracle_cond_indep_test_example_4(),
         level=0.05,
-        log_file='log_pc.log'
+        log_file=''
     )
+    print(skeleton)
+    print(separation_sets)
