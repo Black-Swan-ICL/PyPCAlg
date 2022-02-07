@@ -126,13 +126,15 @@ def run_pc_adjacency_phase(data: pd.DataFrame, indep_test_func: callable,
 
 # TODO given an option to log the run ?
 # TODO implement
-def run_pc_orientation_phase(causal_skeleton, separation_sets):
+def run_pc_orientation_phase(causal_skeleton: np.ndarray,
+                             separation_sets: dict) -> np.ndarray:
 
     return np.nan * np.ones_like(causal_skeleton)
 
 
 # TODO give an option to log the run ?
-def run_pc_algorithm(data, indep_test_func, cond_indep_test_func, level):
+def run_pc_algorithm(data: pd.DataFrame, indep_test_func: callable,
+                     cond_indep_test_func: callable, level: float) -> dict:
     """
     Runs the original PC algorithm.
 
