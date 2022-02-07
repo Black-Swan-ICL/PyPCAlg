@@ -1,8 +1,6 @@
 from itertools import combinations
 
 import copy
-import logging
-import os
 
 import numpy as np
 import pandas as pd
@@ -57,6 +55,10 @@ def run_pc_adjacency_phase(data: pd.DataFrame, indep_test_func: callable,
 
     causal_skeleton = np.ones((nb_var, nb_var)) - np.identity(nb_var)
     separation_sets = dict()
+    for x in range(nb_var):
+        for y in range(x + 1, nb_var):
+            separation_sets[(x, y)] = set()
+            separation_sets[(y, x)] = set()
 
     depth = 0
 
@@ -114,16 +116,8 @@ def run_pc_adjacency_phase(data: pd.DataFrame, indep_test_func: callable,
 
                         causal_skeleton[x, y] = 0
                         causal_skeleton[y, x] = 0
-
-                        if (x, y) in separation_sets:
-                            separation_sets[(x, y)].append([])
-                        else:
-                            separation_sets[(x, y)] = [[]]
-
-                        if (y, x) in separation_sets:
-                            separation_sets[(y, x)].append([])
-                        else:
-                            separation_sets[(y, x)] = [[]]
+                        separation_sets[(x, y)].add(tuple())
+                        separation_sets[(y, x)].add(tuple())
 
                 else:
 
@@ -149,16 +143,8 @@ def run_pc_adjacency_phase(data: pd.DataFrame, indep_test_func: callable,
 
                             causal_skeleton[x, y] = 0
                             causal_skeleton[y, x] = 0
-
-                            if (x, y) in separation_sets:
-                                separation_sets[(x, y)].append(list(z))
-                            else:
-                                separation_sets[(x, y)] = [list(z)]
-
-                            if (y, x) in separation_sets:
-                                separation_sets[(y, x)].append(list(z))
-                            else:
-                                separation_sets[(y, x)] = [list(z)]
+                            separation_sets[(x, y)].add(z)
+                            separation_sets[(y, x)].add(z)
 
         depth += 1
 
@@ -183,17 +169,24 @@ def run_pc_orientation_phase(causal_skeleton: np.ndarray,
         )
 
     cpdag = copy.deepcopy(causal_skeleton)
+
     # Orient the unshielded triples if any
     unshielded_triples = find_unshielded_triples(
         adjacency_matrix=causal_skeleton
     )
-    print(unshielded_triples)
+
+    if logging_active:
+        logger.info(f'The unshielded triples are : {unshielded_triples}')
+
     for (a, b, c) in unshielded_triples:
-        print(f'unshielded triple {(a, b, c)}')
-        if [b] not in separation_sets[(a, c)]:
+        not_in_sepset = all([b not in sep for sep in separation_sets[(a, c)]])
+        if not_in_sepset:
             cpdag[b, a] = 0
             cpdag[b, c] = 0
-            print(cpdag)
+            logger.info(f'Unshielded triple {(a, b, c)}')
+            logger.info(f'{[b]} not in SepSet[{(a, c)}] = '
+                        f'{separation_sets[(a, c)]}')
+            logger.info(f'Removing {b} -> {a} and {b} -> {c} from graph')
 
     return cpdag
 
@@ -261,6 +254,8 @@ if __name__ == '__main__':
         level=0.05,
         log_file='pc_adjacency.log'
     )
+
+    print(separation_sets)
 
     cpdag = run_pc_orientation_phase(
         causal_skeleton=skeleton,
