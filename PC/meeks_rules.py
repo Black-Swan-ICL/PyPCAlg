@@ -109,7 +109,49 @@ def apply_rule_R3(cpdag: np.ndarray) -> np.ndarray:
 
 def apply_rule_R4(cpdag: np.ndarray) -> np.ndarray:
 
-    return cpdag
+    new_cpdag = copy.deepcopy(cpdag)
+
+    n = new_cpdag.shape[0]
+    adjacent_vertices = set()
+    for a in range(n):
+        for b in range(a + 1, n):
+            if new_cpdag[a, b] == 1 and new_cpdag[b, a] == 1:
+                adjacent_vertices.add((a, b))
+
+    for a, b in adjacent_vertices:
+
+        neighbours_a = set()
+        for i in range(n):
+            if new_cpdag[a, i] == 1 and new_cpdag[i, a] == 1:
+                neighbours_a.add(i)
+
+        parents_b = set()
+        for k in range(n):
+            if new_cpdag[k, b] == 1 and new_cpdag[b, k] == 0:
+                parents_b.add(k)
+
+        eligible_ds = neighbours_a.intersection(parents_b)
+        stop = False
+        for d in eligible_ds:
+
+            parents_d = set()
+            for k in range(n):
+                if new_cpdag[k, d] == 1 and new_cpdag[d, k] == 0:
+                    parents_d.add(k)
+
+            proto_eligible_cs = parents_d.intersection(neighbours_a)
+            eligible_cs = set()
+            for c in proto_eligible_cs:
+                if new_cpdag[c, b] == 0 and new_cpdag[b, c] == 0:
+                    eligible_cs.add(c)
+                    new_cpdag[b, a] = 0
+                    stop = True
+                    break
+
+            if stop:
+                break
+
+    return new_cpdag
 
 
 def apply_Meeks_rules(cpdag: np.ndarray, apply_R4: bool) -> np.ndarray:
