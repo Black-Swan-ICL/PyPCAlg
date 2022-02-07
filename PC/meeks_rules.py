@@ -5,162 +5,128 @@ import copy
 
 import numpy as np
 
+from PC.utilities.pdag import find_children, find_parents, \
+    find_undirected_neighbours, find_undirected_adjacent_pairs, \
+    find_undirected_non_adjacent_pairs
 
-def apply_rule_R1(cpdag: np.ndarray) -> np.ndarray:
 
-    new_cpdag = copy.deepcopy(cpdag)
+def apply_rule_R1(pdag: np.ndarray) -> np.ndarray:
 
-    n = new_cpdag.shape[0]
-    non_adjacent_vertices = set()
-    for a in range(n):
-        for c in range(a + 1, n):
-            if new_cpdag[a, c] == 0 and new_cpdag[c, a] == 0:
-                non_adjacent_vertices.add((a, c))
+    new_pdag = copy.deepcopy(pdag)
+
+    non_adjacent_vertices = find_undirected_non_adjacent_pairs(pdag=pdag)
 
     for a, c in non_adjacent_vertices:
 
-        children_a = set()
-        for b in range(n):
-            if new_cpdag[a, b] == 1 and new_cpdag[b, a] == 0:
-                children_a.add(b)
+        children_a = find_children(pdag=new_pdag,
+                                   node=a)
 
-        adjacent_c = set()
-        for b in range(n):
-            if new_cpdag[b, c] == 1 and new_cpdag[c, b] == 1:
-                adjacent_c.add(b)
+        undirected_neighbours_c = find_undirected_neighbours(pdag=new_pdag,
+                                                             node=c)
 
-        eligible = children_a.intersection(adjacent_c)
+        eligible = children_a.intersection(undirected_neighbours_c)
         for b in eligible:
-            new_cpdag[c, b] = 0
+            new_pdag[c, b] = 0
 
-    return new_cpdag
+    return new_pdag
 
 
-def apply_rule_R2(cpdag: np.ndarray) -> np.ndarray:
+def apply_rule_R2(pdag: np.ndarray) -> np.ndarray:
 
-    new_cpdag = copy.deepcopy(cpdag)
+    new_pdag = copy.deepcopy(pdag)
 
-    n = new_cpdag.shape[0]
-    adjacent_vertices = set()
-    for a in range(n):
-        for b in range(a + 1, n):
-            if new_cpdag[a, b] == 1 and new_cpdag[b, a] == 1:
-                adjacent_vertices.add((a, b))
+    adjacent_vertices = find_undirected_adjacent_pairs(new_pdag)
 
     for a, b in adjacent_vertices:
 
-        children_a = set()
-        for c in range(n):
-            if new_cpdag[a, c] == 1 and new_cpdag[c, a] == 0:
-                children_a.add(c)
+        children_a = find_children(pdag=new_pdag,
+                                   node=a)
 
-        parents_b = set()
-        for c in range(n):
-            if new_cpdag[c, b] == 1 and new_cpdag[b, c] == 0:
-                parents_b.add(c)
+        parents_b = find_parents(pdag=new_pdag,
+                                 node=b)
 
         eligible = children_a.intersection(parents_b)
         if len(eligible) > 0:
-            new_cpdag[b, a] = 0
+            new_pdag[b, a] = 0
 
-    return new_cpdag
+    return new_pdag
 
 
-def apply_rule_R3(cpdag: np.ndarray) -> np.ndarray:
+def apply_rule_R3(pdag: np.ndarray) -> np.ndarray:
 
-    new_cpdag = copy.deepcopy(cpdag)
+    new_pdag = copy.deepcopy(pdag)
 
-    n = new_cpdag.shape[0]
-    adjacent_vertices = set()
-    for a in range(n):
-        for b in range(a + 1, n):
-            if new_cpdag[a, b] == 1 and new_cpdag[b, a] == 1:
-                adjacent_vertices.add((a, b))
+    adjacent_vertices = find_undirected_adjacent_pairs(new_pdag)
 
     for a, b in adjacent_vertices:
 
-        neighbours_a = set()
-        for i in range(n):
-            if new_cpdag[a, i] == 1 and new_cpdag[i, a] == 1:
-                neighbours_a.add(i)
-        nb_neighbours_a = len(neighbours_a)
+        undirected_neighbours_a = find_undirected_neighbours(pdag=new_pdag,
+                                                             node=a)
+        nb_neighbours_a = len(undirected_neighbours_a)
         if nb_neighbours_a < 2:
             continue
         else:
             non_adjacent_neighbours_a = set()
             for i in range(nb_neighbours_a):
                 for j in range(i + 1, nb_neighbours_a):
-                    if new_cpdag[i, j] == 0 and new_cpdag[j, i] == 0:
+                    if new_pdag[i, j] == 0 and new_pdag[j, i] == 0:
                         non_adjacent_neighbours_a.add((i, j))
             if len(non_adjacent_neighbours_a) < 1:
                 continue
             else:
-                parents_b = set()
-                for k in range(n):
-                    if new_cpdag[k, b] == 1 and new_cpdag[b, k] == 0:
-                        parents_b.add(k)
+                parents_b = find_parents(pdag=new_pdag,
+                                         node=b)
                 for c, d in non_adjacent_neighbours_a:
                     if c in parents_b and d in parents_b:
-                        new_cpdag[b, a] = 0
+                        new_pdag[b, a] = 0
                         break
 
-    return new_cpdag
+    return new_pdag
 
 
-def apply_rule_R4(cpdag: np.ndarray) -> np.ndarray:
+def apply_rule_R4(pdag: np.ndarray) -> np.ndarray:
 
-    new_cpdag = copy.deepcopy(cpdag)
+    new_pdag = copy.deepcopy(pdag)
 
-    n = new_cpdag.shape[0]
-    adjacent_vertices = set()
-    for a in range(n):
-        for b in range(a + 1, n):
-            if new_cpdag[a, b] == 1 and new_cpdag[b, a] == 1:
-                adjacent_vertices.add((a, b))
+    adjacent_vertices = find_undirected_adjacent_pairs(new_pdag)
 
     for a, b in adjacent_vertices:
 
-        neighbours_a = set()
-        for i in range(n):
-            if new_cpdag[a, i] == 1 and new_cpdag[i, a] == 1:
-                neighbours_a.add(i)
+        undirected_neighbours_a = find_undirected_neighbours(pdag=new_pdag,
+                                                             node=a)
 
-        parents_b = set()
-        for k in range(n):
-            if new_cpdag[k, b] == 1 and new_cpdag[b, k] == 0:
-                parents_b.add(k)
+        parents_b = find_parents(pdag=new_pdag,
+                                 node=b)
 
-        eligible_ds = neighbours_a.intersection(parents_b)
+        eligible_ds = undirected_neighbours_a.intersection(parents_b)
         stop = False
         for d in eligible_ds:
 
-            parents_d = set()
-            for k in range(n):
-                if new_cpdag[k, d] == 1 and new_cpdag[d, k] == 0:
-                    parents_d.add(k)
+            parents_d = find_parents(pdag=new_pdag,
+                                     node=d)
 
-            proto_eligible_cs = parents_d.intersection(neighbours_a)
+            proto_eligible_cs = parents_d.intersection(undirected_neighbours_a)
             eligible_cs = set()
             for c in proto_eligible_cs:
-                if new_cpdag[c, b] == 0 and new_cpdag[b, c] == 0:
+                if new_pdag[c, b] == 0 and new_pdag[b, c] == 0:
                     eligible_cs.add(c)
-                    new_cpdag[b, a] = 0
+                    new_pdag[b, a] = 0
                     stop = True
                     break
 
             if stop:
                 break
 
-    return new_cpdag
+    return new_pdag
 
 
-def apply_Meeks_rules(cpdag: np.ndarray, apply_R4: bool) -> np.ndarray:
+def apply_Meeks_rules(pdag: np.ndarray, apply_R4: bool) -> np.ndarray:
 
-    new_cpdag = apply_rule_R1(cpdag=cpdag)
-    new_cpdag = apply_rule_R2(cpdag=new_cpdag)
-    new_cpdag = apply_rule_R3(cpdag=new_cpdag)
+    new_pdag = apply_rule_R1(pdag=pdag)
+    new_pdag = apply_rule_R2(pdag=new_pdag)
+    new_pdag = apply_rule_R3(pdag=new_pdag)
 
     if apply_R4:
-        new_cpdag = apply_rule_R4(cpdag=new_cpdag)
+        new_pdag = apply_rule_R4(pdag=new_pdag)
 
-    return new_cpdag
+    return new_pdag

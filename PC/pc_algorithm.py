@@ -195,7 +195,7 @@ def run_pc_orientation_phase(causal_skeleton: np.ndarray,
     while True:
 
         new_cpdag = apply_Meeks_rules(
-            cpdag=current_cpdag,
+            pdag=current_cpdag,
             apply_R4=False  # Rule R4 is not necessary for the PC algorithm
         )
 
