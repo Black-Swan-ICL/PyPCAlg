@@ -50,3 +50,46 @@ def find_adjacent_vertices_to(x: int, adjacency_matrix: npt.ArrayLike) -> list:
     """
 
     return list(np.where(adjacency_matrix[x, :] != 0)[0])
+
+
+# TODO test
+def find_unshielded_triples(adjacency_matrix: npt.ArrayLike) -> set[tuple]:
+    """
+    Finds unshielded colliders in the graph.
+
+    In an undirected graph, unshielded triples are of the form a -- b -- c
+    with a and c NOT adjacent in the graph. They are represented by tuples
+    (a, b, c).
+
+    Parameters
+    ----------
+    adjacency_matrix : array_like
+        The adjacency matrix of the graph.
+
+    Returns
+    -------
+    set
+        The set of unshielded triples in the graph.
+    """
+    n = adjacency_matrix.shape[0]
+    non_adjacent_vertices = set()
+    for i in range(n):
+        for j in range(i+1, n):
+            if adjacency_matrix[i, j] == 0:
+                non_adjacent_vertices.add((i, j))
+
+    unshielded_triples = set()
+    for (a, c) in non_adjacent_vertices:
+        adjacent_to_a = find_adjacent_vertices_to(
+            x=a,
+            adjacency_matrix=adjacency_matrix
+        )
+        adjacent_to_c = find_adjacent_vertices_to(
+            x=c,
+            adjacency_matrix=adjacency_matrix
+        )
+        adjacent_a_and_c = set(adjacent_to_a).intersection(set(adjacent_to_c))
+        for b in adjacent_a_and_c:
+            unshielded_triples.add((a, b, c))
+
+    return unshielded_triples

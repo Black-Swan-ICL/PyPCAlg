@@ -1,13 +1,15 @@
 from itertools import combinations
 
+import copy
 import logging
 import os
 
 import numpy as np
 import pandas as pd
 
+from PC.utilities.logs import create_logger
 from PC.utilities.pc_algorithm import find_adjacent_vertices, \
-    find_adjacent_vertices_to
+    find_adjacent_vertices_to, find_unshielded_triples
 
 field_pc_cpdag = 'CPDAG'
 field_separation_sets = 'SeparationSets'
@@ -17,24 +19,39 @@ def run_pc_adjacency_phase(data: pd.DataFrame, indep_test_func: callable,
                            cond_indep_test_func: callable,
                            level: float,
                            log_file: str = '') -> tuple[np.ndarray, dict]:
+    """
+    Runs the adjacency phase of the PC algorithm, producing the causal
+    skeleton and the separation sets.
+
+    Parameters
+    ----------
+    data : pandas.DataFrame
+        The observations.
+    indep_test_func : callable
+        A function to perform unconditional independence testing.
+    cond_indep_test_func : callable
+        A function to perform conditional independence testing.
+    level : float
+        The level for the tests.
+    log_file : str, optional
+        The path to a file in which to store the log. No log will be generated
+        if the empty string is provided.
+
+    Returns
+    -------
+    tuple
+        A tuple containing the causal skeleton as first element, and a
+        dictionary of the separation sets as second element.
+    """
 
     # To deal with matters of logging
     logging_active = False
     if log_file != '':
         logging_active = True
-        logger = logging.getLogger('pc_alg_adjacency_phase')
-        logger.setLevel(logging.INFO)
-        formatter = logging.Formatter(
-            fmt='%(asctime)s - %(name)s - %(message)s',
-            datefmt='%d-%b-%y %H:%M:%S'
+        logger = create_logger(
+            logger_name='pc_alg_adjacency_phase',
+            log_file=log_file
         )
-        file_handler = logging.FileHandler(
-            log_file,
-            mode='a'
-        )
-        file_handler.setLevel(logging.INFO)
-        file_handler.setFormatter(formatter)
-        logger.addHandler(file_handler)
 
     nb_obs, nb_var = data.shape
 
@@ -156,7 +173,29 @@ def run_pc_orientation_phase(causal_skeleton: np.ndarray,
                              separation_sets: dict,
                              log_file: str = '') -> np.ndarray:
 
-    return np.nan * np.ones_like(causal_skeleton)
+    # To deal with matters of logging
+    logging_active = False
+    if log_file != '':
+        logging_active = True
+        logger = create_logger(
+            logger_name='pc_alg_orientation_phase',
+            log_file=log_file
+        )
+
+    cpdag = copy.deepcopy(causal_skeleton)
+    # Orient the unshielded triples if any
+    unshielded_triples = find_unshielded_triples(
+        adjacency_matrix=causal_skeleton
+    )
+    print(unshielded_triples)
+    for (a, b, c) in unshielded_triples:
+        print(f'unshielded triple {(a, b, c)}')
+        if [b] not in separation_sets[(a, c)]:
+            cpdag[b, a] = 0
+            cpdag[b, c] = 0
+            print(cpdag)
+
+    return cpdag
 
 
 def run_pc_algorithm(data: pd.DataFrame, indep_test_func: callable,
@@ -174,7 +213,7 @@ def run_pc_algorithm(data: pd.DataFrame, indep_test_func: callable,
     cond_indep_test_func : callable
         A function to perform conditional independence testing.
     level : float
-        The level for the tests
+        The level for the tests.
     log_file : str, optional
         The path to a file in which to store the log. No log will be generated
         if the empty string is provided.
@@ -209,9 +248,6 @@ def run_pc_algorithm(data: pd.DataFrame, indep_test_func: callable,
 
 if __name__ == '__main__':
 
-    log_file = 'log_pc.log'
-    # os.remove(log_file)
-
     from PC.examples.graph_4 import generate_data as generate_data_example_4
     from PC.examples.graph_4 import oracle_indep_test as \
         oracle_indep_test_example_4
@@ -223,7 +259,11 @@ if __name__ == '__main__':
         indep_test_func=oracle_indep_test_example_4(),
         cond_indep_test_func=oracle_cond_indep_test_example_4(),
         level=0.05,
-        log_file=''
+        log_file='pc_adjacency.log'
     )
-    print(skeleton)
-    print(separation_sets)
+
+    cpdag = run_pc_orientation_phase(
+        causal_skeleton=skeleton,
+        separation_sets=separation_sets,
+        log_file='pc_orientation.log'
+    )
