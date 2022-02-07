@@ -53,8 +53,14 @@ def check_independence_from_oracle(oracle: dict, data: pd.DataFrame, x: int,
 
     column_names = list(data.columns)
 
-    key_part_1 = column_names[x]
-    key_part_2 = column_names[y]
+    # Because when we manually list independence relationship we would write
+    # only X_2 _||_ X_3, not X_3 _||_ X_2, for example.
+    if x < y:
+        key_part_1 = column_names[x]
+        key_part_2 = column_names[y]
+    else:
+        key_part_1 = column_names[y]
+        key_part_2 = column_names[x]
     key_part_3 = tuple(column_names[i] for i in sorted(z))
     key = (key_part_1, key_part_2, key_part_3)
 
