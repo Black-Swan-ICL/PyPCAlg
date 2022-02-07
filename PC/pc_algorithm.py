@@ -8,6 +8,7 @@ import pandas as pd
 from PC.utilities.logs import create_logger
 from PC.utilities.pc_algorithm import find_adjacent_vertices, \
     find_adjacent_vertices_to, find_unshielded_triples
+from PC.meeks_rules import apply_Meeks_rules
 
 field_pc_cpdag = 'CPDAG'
 field_separation_sets = 'SeparationSets'
@@ -154,7 +155,6 @@ def run_pc_adjacency_phase(data: pd.DataFrame, indep_test_func: callable,
     return causal_skeleton, separation_sets
 
 
-# TODO implement
 def run_pc_orientation_phase(causal_skeleton: np.ndarray,
                              separation_sets: dict,
                              log_file: str = '') -> np.ndarray:
@@ -183,12 +183,26 @@ def run_pc_orientation_phase(causal_skeleton: np.ndarray,
         if not_in_sepset:
             cpdag[b, a] = 0
             cpdag[b, c] = 0
-            logger.info(f'Unshielded triple {(a, b, c)}')
-            logger.info(f'{[b]} not in SepSet[{(a, c)}] = '
-                        f'{separation_sets[(a, c)]}')
-            logger.info(f'Removing {b} -> {a} and {b} -> {c} from graph')
 
-    return cpdag
+            if logging_active:
+                logger.info(f'Unshielded triple {(a, b, c)}')
+                logger.info(f'{[b]} not in SepSet[{(a, c)}] = '
+                            f'{separation_sets[(a, c)]}')
+                logger.info(f'Removing {b} -> {a} and {b} -> {c} from graph')
+
+    # Apply Meek's rules repeatedly until the CPDAG no longer changes
+    current_cpdag = copy.deepcopy(cpdag)
+    while True:
+
+        new_cpdag = apply_Meeks_rules(
+            cpdag=current_cpdag,
+            apply_R4=False  # Rule R4 is not necessary for the PC algorithm
+        )
+
+        if np.array_equal(new_cpdag, current_cpdag):
+            break
+
+    return new_cpdag
 
 
 def run_pc_algorithm(data: pd.DataFrame, indep_test_func: callable,
@@ -255,10 +269,10 @@ if __name__ == '__main__':
         log_file='pc_adjacency.log'
     )
 
-    print(separation_sets)
-
     cpdag = run_pc_orientation_phase(
         causal_skeleton=skeleton,
         separation_sets=separation_sets,
         log_file='pc_orientation.log'
     )
+
+    print(cpdag)
