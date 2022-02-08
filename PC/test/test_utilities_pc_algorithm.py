@@ -3,7 +3,7 @@ import pytest
 import numpy as np
 
 from PC.utilities.pc_algorithm import find_adjacent_vertices, \
-    find_adjacent_vertices_to
+    find_adjacent_vertices_to, find_unshielded_triples
 
 # Graph with no edges
 adjacency_matrix_1 = np.asarray(
@@ -97,3 +97,57 @@ def test_find_adjacent_vertices_to(x, adjacency_matrix, expected):
 
     assert set(actual) == set(expected)
 
+
+@pytest.mark.parametrize(
+    'adjacency_matrix, expected',
+    [
+        (
+            adjacency_matrix_1,
+            set()
+        ),
+        (
+            adjacency_matrix_2,
+            set()
+        ),
+        (
+            adjacency_matrix_3,
+            {(0, 1, 2)}
+        ),
+        (
+            np.asarray(([
+                [0, 1, 0, 0, 0],
+                [1, 0, 1, 1, 0],
+                [0, 1, 0, 0, 1],
+                [0, 1, 0, 0, 1],
+                [0, 0, 1, 1, 0]
+            ])),
+            {
+                (0, 1, 2),
+                (0, 1, 3),
+                (1, 2, 4),
+                (1, 3, 4),
+                (2, 4, 3),
+                (2, 1, 3)
+            }
+        ),
+        (
+            np.asarray([
+                [0, 1, 0, 0, 0],
+                [1, 0, 1, 0, 0],
+                [0, 1, 0, 1, 1],
+                [0, 0, 1, 0, 1],
+                [0, 0, 1, 1, 0]
+            ]),
+            {
+                (0, 1, 2),
+                (1, 2, 3),
+                (1, 2, 4)
+            }
+        )
+    ]
+)
+def test_find_unshielded_triples(adjacency_matrix, expected):
+
+    actual = find_unshielded_triples(adjacency_matrix=adjacency_matrix)
+
+    assert expected == actual

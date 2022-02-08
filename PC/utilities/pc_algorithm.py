@@ -52,7 +52,6 @@ def find_adjacent_vertices_to(x: int, adjacency_matrix: npt.ArrayLike) -> list:
     return list(np.where(adjacency_matrix[x, :] != 0)[0])
 
 
-# TODO test
 def find_unshielded_triples(adjacency_matrix: npt.ArrayLike) -> set[tuple]:
     """
     Finds unshielded colliders in an undirected graph.
