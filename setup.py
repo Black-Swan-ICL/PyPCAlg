@@ -7,11 +7,11 @@ README = (HERE / 'README.md').read_text()
 
 setup(
     name='PyPCAlg',
-    version='1.0.0',
+    version='1.0.1',
     description='A Python implementation of the original PC algorithm.',
     long_description=README,
     long_description_content_type='text/markdown',
-    url='https://github.com/Black-Swan-ICL/PyRKHSstats',
+    url='https://github.com/Black-Swan-ICL/PyPCAlg',
     author='K. M-H',
     author_email='kmh.pro@protonmail.com',
     license='MIT',
