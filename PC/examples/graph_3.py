@@ -107,6 +107,39 @@ def get_cpdag():
     return cpdag
 
 
+def get_separation_sets():
+    """
+    Returns the separation sets as they should be returned by the PC
+    algorithm for example 3.
+
+    Returns
+    -------
+    dict
+        A dictionary returning the separation sets as they should be returned
+        by the PC algorithm for example 3.
+    """
+    nb_var = get_adjacency_matrix().shape[0]
+
+    separation_sets = dict()
+    for i in range(nb_var):
+        for j in range(i + 1, nb_var):
+            separation_sets[(i, j)] = set()
+            separation_sets[(j, i)] = set()
+
+    separation_sets[(0, 2)].add((1,))
+    separation_sets[(2, 0)].add((1,))
+    separation_sets[(0, 3)].add((1,))
+    separation_sets[(3, 0)].add((1,))
+    separation_sets[(0, 4)].add((1,))
+    separation_sets[(4, 0)].add((1,))
+    separation_sets[(1, 4)].add((2, 3))
+    separation_sets[(4, 1)].add((2, 3))
+    separation_sets[(2, 3)].add((1,))
+    separation_sets[(3, 2)].add((1,))
+
+    return separation_sets
+
+
 def get_adjacency_matrix():
     """
     Returns the adjacency matrix of the graph corresponding to example 3.

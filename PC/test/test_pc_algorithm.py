@@ -10,7 +10,9 @@ from PC.examples.graph_1 import oracle_indep_test as \
     oracle_indep_test_example_1
 from PC.examples.graph_1 import oracle_cond_indep_test as \
     oracle_cond_indep_test_example_1
-from PC.examples.graph_1 import get_cpdag as get_cpdag_example_1
+from PC.examples.graph_1 import get_cpdag as cpdag_example_1
+from PC.examples.graph_1 import get_separation_sets as \
+    separation_sets_example_1
 
 from PC.examples.graph_2 import generate_data as generate_data_example_2
 from PC.examples.graph_2 import get_graph_skeleton as skeleton_example_2
@@ -18,7 +20,9 @@ from PC.examples.graph_2 import oracle_indep_test as \
     oracle_indep_test_example_2
 from PC.examples.graph_2 import oracle_cond_indep_test as \
     oracle_cond_indep_test_example_2
-from PC.examples.graph_2 import get_cpdag as get_cpdag_example_2
+from PC.examples.graph_2 import get_cpdag as cpdag_example_2
+from PC.examples.graph_2 import get_separation_sets as \
+    separation_sets_example_2
 
 from PC.examples.graph_3 import generate_data as generate_data_example_3
 from PC.examples.graph_3 import get_graph_skeleton as skeleton_example_3
@@ -26,7 +30,9 @@ from PC.examples.graph_3 import oracle_indep_test as \
     oracle_indep_test_example_3
 from PC.examples.graph_3 import oracle_cond_indep_test as \
     oracle_cond_indep_test_example_3
-from PC.examples.graph_3 import get_cpdag as get_cpdag_example_3
+from PC.examples.graph_3 import get_cpdag as cpdag_example_3
+from PC.examples.graph_3 import get_separation_sets as \
+    separation_sets_example_3
 
 from PC.examples.graph_4 import generate_data as generate_data_example_4
 from PC.examples.graph_4 import get_graph_skeleton as skeleton_example_4
@@ -34,7 +40,9 @@ from PC.examples.graph_4 import oracle_indep_test as \
     oracle_indep_test_example_4
 from PC.examples.graph_4 import oracle_cond_indep_test as \
     oracle_cond_indep_test_example_4
-from PC.examples.graph_4 import get_cpdag as get_cpdag_example_4
+from PC.examples.graph_4 import get_cpdag as cpdag_example_4
+from PC.examples.graph_4 import get_separation_sets as \
+    separation_sets_example_4
 
 
 @pytest.mark.parametrize(
@@ -47,7 +55,7 @@ from PC.examples.graph_4 import get_cpdag as get_cpdag_example_4
                 oracle_cond_indep_test_example_1(),
                 0.05,
                 skeleton_example_1(),
-                set()  # TODO change when ready
+                separation_sets_example_1()
         ),
         (
                 generate_data_example_2(10),
@@ -55,7 +63,7 @@ from PC.examples.graph_4 import get_cpdag as get_cpdag_example_4
                 oracle_cond_indep_test_example_2(),
                 0.05,
                 skeleton_example_2(),
-                set()  # TODO change when ready
+                separation_sets_example_2()
         ),
         (
                 generate_data_example_3(10),
@@ -63,7 +71,7 @@ from PC.examples.graph_4 import get_cpdag as get_cpdag_example_4
                 oracle_cond_indep_test_example_3(),
                 0.05,
                 skeleton_example_3(),
-                set()  # TODO change when ready
+                separation_sets_example_3()
         ),
         (
                 generate_data_example_4(10),
@@ -71,7 +79,7 @@ from PC.examples.graph_4 import get_cpdag as get_cpdag_example_4
                 oracle_cond_indep_test_example_4(),
                 0.05,
                 skeleton_example_4(),
-                set()  # TODO change when ready
+                separation_sets_example_4()
         ),
     ]
 )
@@ -86,8 +94,43 @@ def test_run_pc_adjacency_phase(data, indep_test_func, cond_indep_test_func,
     )
 
     assert np.array_equal(skeleton, expected_skeleton)
-    # TODO uncomment when ready
-    # assert separation_sets == expected_separation_sets
+    assert separation_sets == expected_separation_sets
+
+
+@pytest.mark.parametrize(
+    'causal_skeleton, separation_sets, expected_cpdag',
+    [
+        (
+                skeleton_example_1(),
+                separation_sets_example_1(),
+                cpdag_example_1()
+        ),
+        (
+                skeleton_example_2(),
+                separation_sets_example_2(),
+                cpdag_example_2()
+        ),
+        (
+                skeleton_example_3(),
+                separation_sets_example_3(),
+                cpdag_example_3()
+        ),
+        (
+                skeleton_example_4(),
+                separation_sets_example_4(),
+                cpdag_example_4()
+        ),
+    ]
+)
+def test_run_pc_orientation_phase(causal_skeleton, separation_sets,
+                                  expected_cpdag):
+
+    actual_cpdag = run_pc_orientation_phase(
+        causal_skeleton=causal_skeleton,
+        separation_sets=separation_sets
+    )
+
+    assert np.array_equal(actual_cpdag, expected_cpdag)
 
 
 @pytest.mark.parametrize(
@@ -98,28 +141,28 @@ def test_run_pc_adjacency_phase(data, indep_test_func, cond_indep_test_func,
                 oracle_indep_test_example_1(),
                 oracle_cond_indep_test_example_1(),
                 0.05,
-                get_cpdag_example_1()
+                cpdag_example_1()
         ),
         (
                 generate_data_example_2(10),
                 oracle_indep_test_example_2(),
                 oracle_cond_indep_test_example_2(),
                 0.05,
-                get_cpdag_example_2()
+                cpdag_example_2()
         ),
         (
                 generate_data_example_3(10),
                 oracle_indep_test_example_3(),
                 oracle_cond_indep_test_example_3(),
                 0.05,
-                get_cpdag_example_3()
+                cpdag_example_3()
         ),
         (
                 generate_data_example_4(10),
                 oracle_indep_test_example_4(),
                 oracle_cond_indep_test_example_4(),
                 0.05,
-                get_cpdag_example_4()
+                cpdag_example_4()
         ),
     ]
 )
