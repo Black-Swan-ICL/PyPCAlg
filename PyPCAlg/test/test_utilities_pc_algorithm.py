@@ -2,7 +2,7 @@ import pytest
 
 import numpy as np
 
-from PC.utilities.pc_algorithm import find_adjacent_vertices, \
+from PyPCAlg.utilities.pc_algorithm import find_adjacent_vertices, \
     find_adjacent_vertices_to, find_unshielded_triples
 
 # Graph with no edges

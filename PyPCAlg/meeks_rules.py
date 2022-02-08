@@ -7,7 +7,7 @@ import copy
 
 import numpy as np
 
-from PC.utilities.pdag import find_children, find_parents, \
+from PyPCAlg.utilities.pdag import find_children, find_parents, \
     find_undirected_neighbours, find_undirected_adjacent_pairs, \
     find_undirected_non_adjacent_pairs
 

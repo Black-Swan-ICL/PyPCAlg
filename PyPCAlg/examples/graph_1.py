@@ -1,14 +1,14 @@
 """
-Corresponds to Directed Acyclic Graph X0 -> X1 -> X2.
+Corresponds to Directed Acyclic Graph X0 -> X1 <- X2.
 """
 import os
 import numpy as np
 import pandas as pd
 
-from PC.examples.oracle_tools import \
+from PyPCAlg.examples.oracle_tools import \
     generate_oracle_independence_relationships, \
     oracle_independence_test, oracle_conditional_independence_test
-from PC.utilities.independence_relationships import \
+from PyPCAlg.utilities.independence_relationships import \
     do_test_linear_independence, \
     do_test_linear_conditional_independence, \
     produce_independence_relationships, render_independence_relationships
@@ -18,7 +18,7 @@ def get_oracle_independence_relationships() -> dict:
 
     filename = os.path.join(
         os.path.dirname(os.path.abspath(__file__)),
-        'true_independence_relationships_graph_2.csv'
+        'true_independence_relationships_graph_1.csv'
     )
 
     oracle = generate_oracle_independence_relationships(filename)
@@ -62,12 +62,12 @@ def oracle_cond_indep_test() -> callable:
 
 def get_graph_skeleton():
     """
-    Returns the skeleton of the graph corresponding to example 2.
+    Returns the skeleton of the graph corresponding to example 1.
 
     Returns
     -------
     array_like
-        The skeleton of the graph corresponding to example 2.
+        The skeleton of the graph corresponding to example 1.
     """
     skeleton = np.asarray(
         [
@@ -83,17 +83,17 @@ def get_graph_skeleton():
 def get_cpdag():
     """
     Returns the Markov equivalence class of the true graph as a Completed
-    Partially Directed Acyclic Graph (CPDAG) for example 2.
+    Partially Directed Acyclic Graph (CPDAG) for example 1.
 
     Returns
     -------
     array_like
-        The CPDAG for example 2.
+        The CPDAG for example 1.
     """
     cpdag = np.asarray(
         [
             [0, 1, 0],
-            [1, 0, 1],
+            [0, 0, 0],
             [0, 1, 0]
         ]
     )
@@ -104,13 +104,13 @@ def get_cpdag():
 def get_separation_sets():
     """
     Returns the separation sets as they should be returned by the PC
-    algorithm for example 2.
+    algorithm for example 1.
 
     Returns
     -------
     dict
         A dictionary returning the separation sets as they should be returned
-        by the PC algorithm for example 2.
+        by the PC algorithm for example 1.
     """
     nb_var = get_adjacency_matrix().shape[0]
 
@@ -120,26 +120,26 @@ def get_separation_sets():
             separation_sets[(i, j)] = set()
             separation_sets[(j, i)] = set()
 
-    separation_sets[(0, 2)].add((1,))
-    separation_sets[(2, 0)].add((1,))
+    separation_sets[(0, 2)].add(tuple())
+    separation_sets[(2, 0)].add(tuple())
 
     return separation_sets
 
 
 def get_adjacency_matrix():
     """
-    Returns the adjacency matrix of the graph corresponding to example 2.
+    Returns the adjacency matrix of the graph corresponding to example 1.
 
     Returns
     -------
     array_like
-        The adjacency matrix of the graph corresponding to example 2.
+        The adjacency matrix of the graph corresponding to example 1.
     """
     adjacency_matrix = np.asarray(
         [
             [0, 1, 0],
-            [0, 0, 1],
-            [0, 0, 0]
+            [0, 0, 0],
+            [0, 1, 0]
         ]
     )
 
@@ -158,7 +158,7 @@ def get_default_coefficients():
     coefficients['u1_to_x1_coeff'] = 1
     coefficients['u2_to_x2_coeff'] = 1
     coefficients['x0_to_x1_coeff'] = 1
-    coefficients['x1_to_x2_coeff'] = 1
+    coefficients['x2_to_x1_coeff'] = 1
 
     return coefficients
 
@@ -166,8 +166,9 @@ def get_default_coefficients():
 def generate_data(sample_size: int, coefficients: dict = None,
                   random_coefficients: bool = False,
                   rng: np.random.Generator = None) -> pd.DataFrame:
+
     if rng is None:
-        rng = np.random.default_rng(278634375013283489033619102949855519832)
+        rng = np.random.default_rng(764218522134391065607584502462157823)
 
     if coefficients is None:
         if random_coefficients:
@@ -192,13 +193,11 @@ def generate_data(sample_size: int, coefficients: dict = None,
     )
 
     x0 = coefficients['u0_to_x0_coeff'] * u0
+    x2 = coefficients['u2_to_x2_coeff'] * u2
     x1 = (
-            coefficients['u1_to_x1_coeff'] * u1 +
-            coefficients['x0_to_x1_coeff'] * x0
-    )
-    x2 = (
-            coefficients['u2_to_x2_coeff'] * u2 +
-            coefficients['x1_to_x2_coeff'] * x1
+        coefficients['x0_to_x1_coeff'] * x0 +
+        coefficients['x2_to_x1_coeff'] * x2 +
+        coefficients['u1_to_x1_coeff'] * u1
     )
 
     data = pd.DataFrame()
@@ -233,7 +232,7 @@ if __name__ == '__main__':
     sample_size = 10000
     csv_filename = os.path.join(
         os.path.dirname(os.path.abspath(__file__)),
-        'empirical_graph_2_independence_relationships_with_linear_tests.csv'
+        'empirical_graph_1_independence_relationships_with_linear_tests.csv'
     )
     run_example_with_linear_tests(
         sample_size=sample_size,

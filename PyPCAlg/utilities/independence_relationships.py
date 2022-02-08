@@ -14,8 +14,7 @@ def do_test_linear_independence(data: pd.DataFrame, x: str, y: str,
     Tests for linear independence between variables x and y.
 
     Can be used ONLY IF the variables x and y taken jointly follow a
-    multivariate
-    Gaussian distribution.
+    multivariate Gaussian distribution.
 
     Parameters
     ----------

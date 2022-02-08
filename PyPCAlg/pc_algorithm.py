@@ -5,10 +5,10 @@ import copy
 import numpy as np
 import pandas as pd
 
-from PC.utilities.logs import create_logger
-from PC.utilities.pc_algorithm import find_adjacent_vertices, \
+from PyPCAlg.utilities.logs import create_logger
+from PyPCAlg.utilities.pc_algorithm import find_adjacent_vertices, \
     find_adjacent_vertices_to, find_unshielded_triples
-from PC.meeks_rules import apply_Meeks_rules
+from PyPCAlg.meeks_rules import apply_Meeks_rules
 
 field_pc_cpdag = 'CPDAG'
 field_separation_sets = 'SeparationSets'

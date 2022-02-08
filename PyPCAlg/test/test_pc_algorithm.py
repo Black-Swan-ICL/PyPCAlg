@@ -1,47 +1,47 @@
 import numpy as np
 import pytest
 
-from PC.pc_algorithm import run_pc_adjacency_phase, run_pc_orientation_phase, \
-    run_pc_algorithm, field_pc_cpdag
+from PyPCAlg.pc_algorithm import run_pc_adjacency_phase, \
+    run_pc_orientation_phase, run_pc_algorithm, field_pc_cpdag
 
-from PC.examples.graph_1 import generate_data as generate_data_example_1
-from PC.examples.graph_1 import get_graph_skeleton as skeleton_example_1
-from PC.examples.graph_1 import oracle_indep_test as \
+from PyPCAlg.examples.graph_1 import generate_data as generate_data_example_1
+from PyPCAlg.examples.graph_1 import get_graph_skeleton as skeleton_example_1
+from PyPCAlg.examples.graph_1 import oracle_indep_test as \
     oracle_indep_test_example_1
-from PC.examples.graph_1 import oracle_cond_indep_test as \
+from PyPCAlg.examples.graph_1 import oracle_cond_indep_test as \
     oracle_cond_indep_test_example_1
-from PC.examples.graph_1 import get_cpdag as cpdag_example_1
-from PC.examples.graph_1 import get_separation_sets as \
+from PyPCAlg.examples.graph_1 import get_cpdag as cpdag_example_1
+from PyPCAlg.examples.graph_1 import get_separation_sets as \
     separation_sets_example_1
 
-from PC.examples.graph_2 import generate_data as generate_data_example_2
-from PC.examples.graph_2 import get_graph_skeleton as skeleton_example_2
-from PC.examples.graph_2 import oracle_indep_test as \
+from PyPCAlg.examples.graph_2 import generate_data as generate_data_example_2
+from PyPCAlg.examples.graph_2 import get_graph_skeleton as skeleton_example_2
+from PyPCAlg.examples.graph_2 import oracle_indep_test as \
     oracle_indep_test_example_2
-from PC.examples.graph_2 import oracle_cond_indep_test as \
+from PyPCAlg.examples.graph_2 import oracle_cond_indep_test as \
     oracle_cond_indep_test_example_2
-from PC.examples.graph_2 import get_cpdag as cpdag_example_2
-from PC.examples.graph_2 import get_separation_sets as \
+from PyPCAlg.examples.graph_2 import get_cpdag as cpdag_example_2
+from PyPCAlg.examples.graph_2 import get_separation_sets as \
     separation_sets_example_2
 
-from PC.examples.graph_3 import generate_data as generate_data_example_3
-from PC.examples.graph_3 import get_graph_skeleton as skeleton_example_3
-from PC.examples.graph_3 import oracle_indep_test as \
+from PyPCAlg.examples.graph_3 import generate_data as generate_data_example_3
+from PyPCAlg.examples.graph_3 import get_graph_skeleton as skeleton_example_3
+from PyPCAlg.examples.graph_3 import oracle_indep_test as \
     oracle_indep_test_example_3
-from PC.examples.graph_3 import oracle_cond_indep_test as \
+from PyPCAlg.examples.graph_3 import oracle_cond_indep_test as \
     oracle_cond_indep_test_example_3
-from PC.examples.graph_3 import get_cpdag as cpdag_example_3
-from PC.examples.graph_3 import get_separation_sets as \
+from PyPCAlg.examples.graph_3 import get_cpdag as cpdag_example_3
+from PyPCAlg.examples.graph_3 import get_separation_sets as \
     separation_sets_example_3
 
-from PC.examples.graph_4 import generate_data as generate_data_example_4
-from PC.examples.graph_4 import get_graph_skeleton as skeleton_example_4
-from PC.examples.graph_4 import oracle_indep_test as \
+from PyPCAlg.examples.graph_4 import generate_data as generate_data_example_4
+from PyPCAlg.examples.graph_4 import get_graph_skeleton as skeleton_example_4
+from PyPCAlg.examples.graph_4 import oracle_indep_test as \
     oracle_indep_test_example_4
-from PC.examples.graph_4 import oracle_cond_indep_test as \
+from PyPCAlg.examples.graph_4 import oracle_cond_indep_test as \
     oracle_cond_indep_test_example_4
-from PC.examples.graph_4 import get_cpdag as cpdag_example_4
-from PC.examples.graph_4 import get_separation_sets as \
+from PyPCAlg.examples.graph_4 import get_cpdag as cpdag_example_4
+from PyPCAlg.examples.graph_4 import get_separation_sets as \
     separation_sets_example_4
 
 

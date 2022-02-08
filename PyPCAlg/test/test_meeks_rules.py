@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from PC.meeks_rules import apply_rule_R1, apply_rule_R2, apply_rule_R3, \
+from PyPCAlg.meeks_rules import apply_rule_R1, apply_rule_R2, apply_rule_R3, \
     apply_rule_R4
 
 
