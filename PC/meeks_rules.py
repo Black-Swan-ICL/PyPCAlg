@@ -112,6 +112,9 @@ def apply_rule_R3(pdag: np.ndarray) -> np.ndarray:
 
         undirected_neighbours_a = find_undirected_neighbours(pdag=new_pdag,
                                                              node=a)
+        if b in undirected_neighbours_a:
+            undirected_neighbours_a.remove(b)
+        undirected_neighbours_a = tuple(undirected_neighbours_a)
         nb_neighbours_a = len(undirected_neighbours_a)
         if nb_neighbours_a < 2:
             continue
@@ -119,8 +122,10 @@ def apply_rule_R3(pdag: np.ndarray) -> np.ndarray:
             non_adjacent_neighbours_a = set()
             for i in range(nb_neighbours_a):
                 for j in range(i + 1, nb_neighbours_a):
-                    if new_pdag[i, j] == 0 and new_pdag[j, i] == 0:
-                        non_adjacent_neighbours_a.add((i, j))
+                    c = undirected_neighbours_a[i]
+                    d = undirected_neighbours_a[j]
+                    if new_pdag[c, d] == 0 and new_pdag[d, c] == 0:
+                        non_adjacent_neighbours_a.add((c, d))
             if len(non_adjacent_neighbours_a) < 1:
                 continue
             else:
