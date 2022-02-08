@@ -1,9 +1,22 @@
 import numpy as np
 
 
-# TODO document
-# TODO test
-def find_children(pdag: np.ndarray, node: int) -> set:
+def find_children(pdag: np.ndarray, node: int) -> set[int]:
+    """
+    Finds the children of a node in a Partially Directed Acyclic Graph (PDAG).
+
+    Parameters
+    ----------
+    pdag : array_like
+        The PDAG.
+    node : int
+        The node.
+
+    Returns
+    -------
+    set
+        The children of the node in the PDAG.
+    """
 
     n = pdag.shape[0]
 
@@ -16,9 +29,22 @@ def find_children(pdag: np.ndarray, node: int) -> set:
     return children
 
 
-# TODO document
-# TODO test
-def find_parents(pdag: np.ndarray, node: int) -> set:
+def find_parents(pdag: np.ndarray, node: int) -> set[int]:
+    """
+    Finds the parents of a node in a Partially Directed Acyclic Graph (PDAG).
+
+    Parameters
+    ----------
+    pdag : array_like
+        The PDAG.
+    node : int
+        The node.
+
+    Returns
+    -------
+    set
+        The parents of the node in the PDAG.
+    """
 
     n = pdag.shape[0]
 
@@ -31,9 +57,23 @@ def find_parents(pdag: np.ndarray, node: int) -> set:
     return parents
 
 
-# TODO document
-# TODO test
-def find_undirected_neighbours(pdag: np.ndarray, node: int) -> set:
+def find_undirected_neighbours(pdag: np.ndarray, node: int) -> set[int]:
+    """
+    Finds the neighbours of a node a in a Partially Directed Acyclic Graph (
+    PDAG) i.e. the nodes b such a - b in the PDAG.
+
+    Parameters
+    ----------
+    pdag : array_like
+        The PDAG.
+    node : int
+        The node.
+
+    Returns
+    -------
+    set
+        The neighbours of the node in the PDAG.
+    """
 
     n = pdag.shape[0]
 
@@ -46,9 +86,24 @@ def find_undirected_neighbours(pdag: np.ndarray, node: int) -> set:
     return undirected_neighbours
 
 
-# TODO document
-# TODO test
-def find_undirected_adjacent_pairs(pdag: np.ndarray) -> set:
+def find_undirected_adjacent_pairs(pdag: np.ndarray) -> set[tuple]:
+    """
+    Finds the pairs of nodes (a, b) in the Partially Directed Acyclic Graph
+    (PDAG) such that there is an undirected edge between a and b, a - b, in
+    the graph.
+
+    Note that a - b will contribute both (a, b) and (b, a) to the set of pairs.
+
+    Parameters
+    ----------
+    pdag : array_like
+        The PDAG.
+
+    Returns
+    -------
+    set
+        The nodes that are adjacent in the graph.
+    """
 
     n = pdag.shape[0]
 
@@ -63,10 +118,24 @@ def find_undirected_adjacent_pairs(pdag: np.ndarray) -> set:
     return adjacent_vertices
 
 
-# TODO document
-# TODO test
-def find_undirected_non_adjacent_pairs(pdag: np.ndarray) -> set:
+def find_undirected_non_adjacent_pairs(pdag: np.ndarray) -> set[tuple]:
+    """
+    Finds the pairs of nodes (a, b) in the Partially Directed Acyclic Graph
+    (PDAG) such that there is no edge between a and b in the graph.
 
+    Note that a <no edge> b will contribute both (a, b) and (b, a) to the
+    set of pairs.
+
+    Parameters
+    ----------
+    pdag : array_like
+        The PDAG.
+
+    Returns
+    -------
+    set
+        The nodes that are not adjacent in the graph.
+    """
     n = pdag.shape[0]
 
     non_adjacent_vertices = set()
