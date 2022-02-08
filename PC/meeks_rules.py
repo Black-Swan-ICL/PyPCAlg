@@ -12,7 +12,6 @@ from PC.utilities.pdag import find_children, find_parents, \
     find_undirected_non_adjacent_pairs
 
 
-# TODO test
 def apply_rule_R1(pdag: np.ndarray) -> np.ndarray:
     """
     Applies Meek's rule R1 to a Partially Directed Acyclic Graph (PDAG).
@@ -50,7 +49,6 @@ def apply_rule_R1(pdag: np.ndarray) -> np.ndarray:
     return new_pdag
 
 
-# TODO test
 def apply_rule_R2(pdag: np.ndarray) -> np.ndarray:
     """
     Applies Meek's rule R2 to a Partially Directed Acyclic Graph (PDAG).
@@ -88,7 +86,6 @@ def apply_rule_R2(pdag: np.ndarray) -> np.ndarray:
     return new_pdag
 
 
-# TODO test
 def apply_rule_R3(pdag: np.ndarray) -> np.ndarray:
     """
     Applies Meek's rule R3 to a Partially Directed Acyclic Graph (PDAG).
@@ -137,7 +134,6 @@ def apply_rule_R3(pdag: np.ndarray) -> np.ndarray:
     return new_pdag
 
 
-# TODO test
 def apply_rule_R4(pdag: np.ndarray) -> np.ndarray:
     """
     Applies Meek's rule R4 to a Partially Directed Acyclic Graph (PDAG).
@@ -191,7 +187,6 @@ def apply_rule_R4(pdag: np.ndarray) -> np.ndarray:
     return new_pdag
 
 
-# TODO test
 def apply_Meeks_rules(pdag: np.ndarray, apply_R4: bool) -> np.ndarray:
     """
     Applies Meek's rules to a Partially Directed Acyclic Graph (PDAG).
