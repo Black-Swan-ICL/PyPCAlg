@@ -32,5 +32,6 @@ setup(
         'scikit-learn',
         'pingouin'
     ],
-    python_requires=">=3.9"
+    python_requires=">=3.9",
+    include_package_data=True
 )
