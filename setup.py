@@ -33,5 +33,6 @@ setup(
         'pingouin'
     ],
     python_requires=">=3.9",
-    include_package_data=True
+    include_package_data=True,
+    package_data={'': ['examples/true_independence_relationships_graph_*.csv']}
 )
