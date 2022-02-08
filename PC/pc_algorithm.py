@@ -274,32 +274,3 @@ def run_pc_algorithm(data: pd.DataFrame, indep_test_func: callable,
     res[field_separation_sets] = separation_sets
 
     return res
-
-
-if __name__ == '__main__':
-
-    from PC.examples.graph_4 import generate_data as generate_data_example_4
-    from PC.examples.graph_4 import oracle_indep_test as \
-        oracle_indep_test_example_4
-    from PC.examples.graph_4 import oracle_cond_indep_test as \
-        oracle_cond_indep_test_example_4
-    from PC.examples.graph_4 import get_separation_sets
-
-    skeleton, separation_sets = run_pc_adjacency_phase(
-        data=generate_data_example_4(10),
-        indep_test_func=oracle_indep_test_example_4(),
-        cond_indep_test_func=oracle_cond_indep_test_example_4(),
-        level=0.05,
-        log_file='pc_adjacency.log'
-    )
-
-    cpdag = run_pc_orientation_phase(
-        causal_skeleton=skeleton,
-        separation_sets=separation_sets,
-        log_file='pc_orientation.log'
-    )
-
-    print(f'Skeleton:\n{skeleton}\n')
-    print(f'CPDAG:\n{cpdag}\n')
-    print(f'Separation sets :\n{separation_sets}')
-    print(f'{get_separation_sets()}')
