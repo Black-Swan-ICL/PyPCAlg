@@ -7,7 +7,7 @@ README = (HERE / 'README.md').read_text()
 
 setup(
     name='PyPCAlg',
-    version='1.0.2',
+    version='1.0.3',
     description='A Python implementation of the original PC algorithm.',
     long_description=README,
     long_description_content_type='text/markdown',
