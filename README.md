@@ -8,7 +8,7 @@ C. Glymour and R. Scheines (2nd edition, MIT Press, 2000).
 The package is available from PyPi : [PyPCAlg](https://pypi.org/project/PyPCAlg/).
 
 To install, run 
->>pip install PyPCAlg
+> > pip install PyPCAlg
 
 
 ## Note on the structure of the package
