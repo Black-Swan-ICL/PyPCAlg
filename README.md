@@ -77,7 +77,7 @@ def user_provided_independence_test(data: pandas.DataFrame, x: int, y: int,
     data.iloc[:, x] and data.iloc[:, y] are statistically independent at 
     the level considered
     """
-    # code for the independence test provided by the user
+    # code for the independence test provided by the user goes here...
     
 def user_provided_conditional_independence_test(data: pandas.DataFrame, x: int,
     y: int, z: list[int], level: float) -> bool:
@@ -87,7 +87,7 @@ def user_provided_conditional_independence_test(data: pandas.DataFrame, x: int,
     conditionally on the variables z with observations data.iloc[:, z] at 
     the level considered.
     """
-    # code for the conditional independence test provided by the user
+    # code for the conditional independence test provided by the user goes here...
 ```
 
 ## References
